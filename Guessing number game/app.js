@@ -1,62 +1,89 @@
 // GUESSING NUMBER GAME
 import inquirer from 'inquirer';
-// GENERATING THE RANDOM NUMBER
-// let randNum: number = Math.floor(Math.random() * 10);
+import chalk from 'chalk';
+import chalkAnimation from 'chalk-animation';
+import { createSpinner } from 'nanospinner';
+import figlet from 'figlet';
+// TIMER
+const sleep = (v) => new Promise(r => { setTimeout(r, v); });
+// STARTING GAME DISPLAY:
+const gameIndicator = async () => {
+    let rainbowTitle = chalkAnimation.rainbow(`
+                        NUMBER GUESSING GAME
+    =====================================================================
+            =====================================================
+                ========================================
+`);
+    await sleep(4000);
+    rainbowTitle.stop();
+};
+await gameIndicator();
+const gameDetailIndicator = () => {
+    console.log(`
+    ${chalk.bgMagenta('INSTRUCTION ABOUT THIS GAME :')}
+    ${chalk.bgMagenta('1.')} THERE ARE TOTAL THREE ROUND OF THIS GAME FIRST YOU WILL NEED TO GUESS ANY NUMBER BETWEEN ${chalk.bgMagenta('0 to 9')}
+    ${chalk.bgMagenta('2.')} IF YOU GUESSED THE RIGHT NUMBER, THE SECOND ROUND WILL START
+    ${chalk.bgMagenta('3.')} IF YOU WIN ALL THE ROUNDS YOU WILL BE WINNER OF THIS GAME 
+    `);
+};
+gameDetailIndicator();
 // GETTING THE NUMBER FROM USER
-var winner;
-var round = 0;
+var winner = false;
+var Totalchance = 6;
+let counter = 1;
+let randNum = Math.floor(Math.random() * 10);
 const valueGetter = async () => {
-    let randNum = Math.floor(Math.random() * 10);
-    console.log("value by system", randNum);
     let userInput = await inquirer.prompt([{
-            name: "userInput",
+            name: 'userInput',
             type: 'number',
-            message: "Guess any number between 0 to 9: "
+            message: 'Please Guess any number: '
         }]);
+    const spinner = createSpinner(chalk.yellow('Checking answer... ')).start();
+    await sleep(0);
+    spinner.success();
     if (randNum === userInput.userInput) {
         winner = true;
-        console.log("Wow, you guessed the right number...!!!");
+        console.log(chalk.green("Wow, you guessed the right number...!!!"));
+        winnerFunc();
     }
-    else {
+    else if (randNum > userInput.userInput) {
         winner = false;
-        console.log("Opps... You guessed the wrong number try agin!");
+        console.log(`${counter === 4 ? chalk.bgMagenta('Opps... Guessed value is less than the winning number, and you just only have last chance') : chalk.bgMagenta(`Opps... Guessed value is less than the winning number, you just only have ${counter} chance`)}`);
+    }
+    else if (randNum < userInput.userInput) {
+        winner = false;
+        console.log(`${counter === 4 ? chalk.bgMagenta('Opps... Guessed value is greater than the winning number, and you just only have last chance') : chalk.bgMagenta(`Opps... Guessed value is greater than the winning number, you just only have ${counter} chance`)}`);
     }
 };
-// MAKING THREE ROUNDS
-const againStarter = async () => {
+const newStarter = async () => {
     do {
         await valueGetter();
-        round++;
-        var again = await inquirer.prompt([
-            {
-                name: "nextLevel",
-                type: "input",
-                message: round === 3 ? 'Congratulation you win all the round best wishes' : (winner === true ? `You won the ${round} round, Are you ready for the next round y or n?` : "You lost the game, Best Luck!!!")
-            }
-        ]);
-    } while (winner === true && round < 3 && again.nextLevel == 'y' || again.nextLevel == "Y" || again.nextLevel == 'yes' || again.nextLevel == "YES");
+        counter++;
+    } while (winner === false && counter < Totalchance);
 };
-// WINNING AND LOSE STATEMENT
-await againStarter();
-// NEED TO ADD THE FURTHER FUNCTIONALITY FOR IMPROVING THE CODE
+await newStarter();
+function winnerFunc() {
+    figlet.text("Congratulation You Win...!!!", function (err, data) {
+        if (err) {
+            console.log(err);
+        }
+        console.log(chalk.magenta(data));
+    });
+}
+// valueGetter()
+// MAKING THREE ROUNDS
 // const againStarter = async () => {
-//     await valueGetter()
-//     let round = 1;
-//     if (winner === true) {
+//     do {
+//         await valueGetter()
+//         round++;
 //         var again = await inquirer.prompt([
 //             {
 //                 name: "nextLevel",
 //                 type: "input",
-//                 message: "You won the first round, Are you ready for the second round y or n "
+//                 message: (winner === true ? chalk.bgMagenta(`You won the ${round} round, Are you ready for the next round y or n?`) : "You lost the game, Best Luck!!!")
 //             }
 //         ])
-//         while (again.nextLevel == 'y' || again.nextLevel == 'yes' || again.nextLevel == 'Y' || again.nextLevel == 'YES' && winner === true && round === 2) {
-//             await valueGetter()
-//             round++;
-//         }
 //     }
-//     // else {
-//     //     console.log("You lost!!!")
-//     // }
+//     while (winner === true && round < 4 && again.nextLevel == 'y' || again.nextLevel == "Y" || again.nextLevel == 'yes' || again.nextLevel == "YES");
 // }
 // await againStarter()
