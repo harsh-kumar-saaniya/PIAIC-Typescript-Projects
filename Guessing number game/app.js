@@ -1,4 +1,4 @@
-// GUESSING NUMBER GAME
+#! /usr/bin/env node
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import chalkAnimation from 'chalk-animation';
@@ -29,8 +29,9 @@ const gameDetailIndicator = () => {
 gameDetailIndicator();
 // GETTING THE NUMBER FROM USER
 var winner = false;
-var Totalchance = 6;
-let counter = 1;
+var Totalchance = 5;
+let counter = 0;
+let minusChance = 5;
 let randNum = Math.floor(Math.random() * 10);
 const valueGetter = async () => {
     let userInput = await inquirer.prompt([{
@@ -39,8 +40,9 @@ const valueGetter = async () => {
             message: 'Please Guess any number: '
         }]);
     const spinner = createSpinner(chalk.yellow('Checking answer... ')).start();
-    await sleep(0);
+    await sleep(3000);
     spinner.success();
+    minusChance--;
     if (randNum === userInput.userInput) {
         winner = true;
         console.log(chalk.green("Wow, you guessed the right number...!!!"));
@@ -48,11 +50,11 @@ const valueGetter = async () => {
     }
     else if (randNum > userInput.userInput) {
         winner = false;
-        console.log(`${counter === 4 ? chalk.bgMagenta('Opps... Guessed value is less than the winning number, and you just only have last chance') : chalk.bgMagenta(`Opps... Guessed value is less than the winning number, you just only have ${counter} chance`)}`);
+        console.log(`${counter === 4 ? chalk.red('Opps... Guessed value is less than the winning number, and you just only had 5 chances You lose') : chalk.bgMagenta(`Opps... Guessed value is less than the winning number, you just only have ${minusChance} chance`)}`);
     }
     else if (randNum < userInput.userInput) {
         winner = false;
-        console.log(`${counter === 4 ? chalk.bgMagenta('Opps... Guessed value is greater than the winning number, and you just only have last chance') : chalk.bgMagenta(`Opps... Guessed value is greater than the winning number, you just only have ${counter} chance`)}`);
+        console.log(`${counter === 4 ? chalk.red('Opps... Guessed value is greater than the winning number, and you just only had 5 chances you lose') : chalk.bgMagenta(`Opps... Guessed value is greater than the winning number, you just only have ${minusChance} chance`)}`);
     }
 };
 const newStarter = async () => {

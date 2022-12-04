@@ -1,4 +1,5 @@
-// GUESSING NUMBER GAME
+#! /usr/bin/env node
+
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import chalkAnimation from 'chalk-animation';
@@ -37,8 +38,9 @@ gameDetailIndicator()
 // GETTING THE NUMBER FROM USER
 
 var winner: boolean = false;
-var Totalchance: number = 6;
-let counter: number = 1;
+var Totalchance: number = 5;
+let counter: number = 0;
+let minusChance: number = 5;
 let randNum: number = Math.floor(Math.random() * 10);
 
 const valueGetter = async () => {
@@ -50,8 +52,9 @@ const valueGetter = async () => {
     }])
 
     const spinner = createSpinner(chalk.yellow('Checking answer... ')).start()
-    await sleep(0)
+    await sleep(3000)
     spinner.success()
+    minusChance--;
 
     if (randNum === userInput.userInput) {
         winner = true;
@@ -60,11 +63,11 @@ const valueGetter = async () => {
 
     } else if (randNum > userInput.userInput) {
         winner = false;
-        console.log(`${counter === 4 ? chalk.bgMagenta('Opps... Guessed value is less than the winning number, and you just only have last chance') : chalk.bgMagenta(`Opps... Guessed value is less than the winning number, you just only have ${counter} chance`)}`)
+        console.log(`${counter === 4 ? chalk.red('Opps... Guessed value is less than the winning number, and you just only had 5 chances You lose') : chalk.bgMagenta(`Opps... Guessed value is less than the winning number, you just only have ${minusChance} chance`)}`)
     }
     else if (randNum < userInput.userInput) {
         winner = false;
-        console.log(`${counter === 4 ? chalk.bgMagenta('Opps... Guessed value is greater than the winning number, and you just only have last chance') : chalk.bgMagenta(`Opps... Guessed value is greater than the winning number, you just only have ${counter} chance`)}`)
+        console.log(`${counter === 4 ? chalk.red('Opps... Guessed value is greater than the winning number, and you just only had 5 chances you lose') : chalk.bgMagenta(`Opps... Guessed value is greater than the winning number, you just only have ${minusChance} chance`)}`)
     }
 }
 
