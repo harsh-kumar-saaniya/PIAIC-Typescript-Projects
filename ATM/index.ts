@@ -7,8 +7,8 @@ import { createSpinner } from 'nanospinner';
 
 const sleep = (v: number) => new Promise(r => setTimeout(r, v));
 let userBalance = Math.ceil(Math.random() * 100000);
-// let accountNumber = 'PK00000123456789';
-let accountNumber = '123';
+let accountNumber = 'PK00000123456789';
+// let accountNumber = '123';
 
 // STARTING HIGHLIHTS
 
@@ -74,11 +74,12 @@ async function checkingAccountBalance() {
         message: 'Enter your 16 digits Account number: '
     }])
 
-    if (userAcNo.AccountNumber === accountNumber) {
+    if (userAcNo.AccountNumber === accountNumber || userAcNo.AccountNumber === 'PK00000123456789' || userAcNo.AccountNumber === 'pk00000123456789') {
         const spinner = createSpinner(chalk.yellow('Please wait ATM is Checking Your Account Balance... ')).start()
         await sleep(3000)
         spinner.success()
         console.log(`\nYour Current Balance ${chalk.cyan(`${userBalance}`)}`)
+        await againRunner()
     }
     else {
         console.log(chalk.red("Invalid Account Number, Please input valid account number from your details"))
@@ -109,7 +110,7 @@ const funcitonsToPerform = async () => {
         console.log("Cash withdraw  ");
     }
     else if (fuctionality.Functions === "Checking Account Balance") {
-        checkingAccountBalance()
+        await checkingAccountBalance()
     }
     else if (fuctionality.Functions === "Cash Deposit") {
         console.log("Cash Deposit")
@@ -119,10 +120,24 @@ const funcitonsToPerform = async () => {
     }
 }
 
+const againRunner = async () => {
+    let againChance = await inquirer.prompt([
+        {
+            name: 'Again',
+            type: 'input',
+            message: 'Would you like to use ATM again Y or N? '
+        }
+    ])
+    while (againChance.Again === 'Y') {
+        await funcitonsToPerform()
+        await againRunner()
+    }
+}
+
 
 // await sleep(3000);
 // await nameIndc();
-// await login();
+await login();
 // await sleep(5000);
 // await loading();
 // await sleep(3000);
