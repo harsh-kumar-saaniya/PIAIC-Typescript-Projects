@@ -5,9 +5,13 @@ import chalkAnimation from 'chalk-animation';
 import figlet from 'figlet';
 import { createSpinner } from 'nanospinner';
 
-const sleep = (v: number) => new Promise(r => setTimeout(r, v));
+
 let userBalance = Math.ceil(Math.random() * 100000);
 let accountNumber = 'PK00000123456789';
+let userPin = 1234;
+let updatedBalance: number; 
+
+const sleep = (v: number) => new Promise(r => setTimeout(r, v));
 // let accountNumber = '123';
 
 // STARTING HIGHLIHTS
@@ -66,6 +70,57 @@ const login = async () => {
 // need to work on validation
 
 // ATM FUNCTIONALITIES 
+
+async function cashWithDraw() {
+    let withDrawingAmount: number;
+
+    let pin = await inquirer.prompt([{
+        name: 'Userpin',
+        type: 'number',
+        message: 'Please Enter your 4 digits pin: '
+    }])
+
+    if (pin.Userpin === userPin) {
+        const immediateFigure = await inquirer.prompt([
+            {
+                type: "list",
+                name: "Amount",
+                message: "Please select any amount from below options: \n ",
+                choices: [1000, 2000, 3000, 4000, 5000, 10000, "Other Amount"]
+            },
+        ])
+
+        if (immediateFigure.Amount === "Other Amount") {
+            let otherAmount = await inquirer.prompt([{
+                name: 'CustomAmount',
+                type: 'number',
+                message: 'Please Enter Amount: '
+            }])
+
+            if (otherAmount.CustomAmount > userBalance) {
+                console.log("Insuificent Balance! ")
+                await cashWithDraw()
+            }
+            else {
+                withDrawingAmount = otherAmount.CustomAmount;
+                updatedBalance = userBalance-withDrawingAmount
+                console.log(`${withDrawingAmount} has WithDrawed, your current balance is ${updatedBalance}`)
+            }
+
+        }
+        else {
+            withDrawingAmount = immediateFigure.Amount
+            updatedBalance = userBalance-withDrawingAmount
+            console.log(`${withDrawingAmount} has WithDrawed, your current balance is ${updatedBalance}`)
+        }
+    }
+    else {
+        console.log('Invalid PIN, Please input the right pin as per the detail section')
+        await cashWithDraw()
+    }
+}
+// choice: 
+
 async function checkingAccountBalance() {
 
     let userAcNo = await inquirer.prompt([{
@@ -79,11 +134,10 @@ async function checkingAccountBalance() {
         await sleep(3000)
         spinner.success()
         console.log(`\nYour Current Balance ${chalk.cyan(`${userBalance}`)}`)
-        await againRunner()
     }
     else {
         console.log(chalk.red("Invalid Account Number, Please input valid account number from your details"))
-        checkingAccountBalance()
+        await checkingAccountBalance()
     }
 
 }
@@ -96,7 +150,7 @@ async function loading() {
 
 // ATM FUNCTIONALITY USER SELECTION 
 
-const funcitonsToPerform = async () => {
+const atmFunctions = async () => {
     const fuctionality = await inquirer.prompt([
         {
             type: "list",
@@ -107,10 +161,10 @@ const funcitonsToPerform = async () => {
     ])
     // console.log(fuctionality)
     if (fuctionality.Functions === "Cash Withdraw") {
-        console.log("Cash withdraw  ");
+        await cashWithDraw()
     }
     else if (fuctionality.Functions === "Checking Account Balance") {
-        await checkingAccountBalance()
+        await againRunner()
     }
     else if (fuctionality.Functions === "Cash Deposit") {
         console.log("Cash Deposit")
@@ -121,17 +175,19 @@ const funcitonsToPerform = async () => {
 }
 
 const againRunner = async () => {
-    let againChance = await inquirer.prompt([
+    await checkingAccountBalance()
+
+    var againChance = await inquirer.prompt([
         {
             name: 'Again',
             type: 'input',
             message: 'Would you like to use ATM again Y or N? '
         }
     ])
-    while (againChance.Again === 'Y') {
-        await funcitonsToPerform()
-        await againRunner()
+    if (againChance.Again === "Y" || againChance.Again === "y" || againChance.Again === "YES" || againChance === "yes") {
+        await atmFunctions();
     }
+
 }
 
 
@@ -141,4 +197,4 @@ await login();
 // await sleep(5000);
 // await loading();
 // await sleep(3000);
-await funcitonsToPerform();
+await atmFunctions();
