@@ -17,7 +17,7 @@ async function titleIndc() {
         console.log(chalk.magenta(data));
     });
 }
-// await titleIndc()
+await titleIndc();
 const nameIndc = async () => {
     let developerName = chalkAnimation.rainbow(`
 =============================================================
@@ -86,25 +86,25 @@ async function cashWithDraw() {
             else {
                 withDrawingAmount = otherAmount.CustomAmount;
                 userBalance = userBalance - withDrawingAmount;
-                console.log(`
+                console.log(`${chalk.magenta(`
     ==========================================================
         ${withDrawingAmount} has WithDrawed, your current balance is ${userBalance}
     ==========================================================
-                `);
+    `)}`);
             }
         }
         else {
             withDrawingAmount = immediateFigure.Amount;
             userBalance = userBalance - withDrawingAmount;
-            console.log(`
+            console.log(`${chalk.magenta(`
     ==========================================================
         ${withDrawingAmount} has WithDrawed, your current balance is ${userBalance}
     ==========================================================
-            `);
+    `)}`);
         }
     }
     else {
-        console.log('Invalid PIN, Please input the right pin as per the detail section');
+        console.log(chalk.red('Invalid PIN, Please input the right pin as per the detail section'));
         await cashWithDraw();
     }
 }
@@ -164,7 +164,7 @@ async function cashDepositer() {
         }
     }
     else {
-        console.log('Invalid PIN, Please input the right pin as per the detail section');
+        console.log(chalk.red('Invalid PIN, Please input the right pin as per the detail section'));
         await cashDepositer();
     }
 }
@@ -246,10 +246,10 @@ const repeater = async (callback) => {
 //     }
 // }
 // SOMES CALLBACKS WORKS>>
-// await sleep(3000);
-// await nameIndc();
+await sleep(3000);
+await nameIndc();
 await login();
-// await sleep(5000);
-// await loading();
-// await sleep(3000);
+await sleep(5000);
+await loading();
+await sleep(3000);
 await atmFunctions();
