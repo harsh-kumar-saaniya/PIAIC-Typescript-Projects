@@ -7,10 +7,8 @@ import { createSpinner } from 'nanospinner';
 let userBalance = Math.ceil(Math.random() * 100000);
 let accountNumber = 'PK00000123456789';
 let userPin = 1234;
-let updatedBalance;
 const sleep = (v) => new Promise(r => setTimeout(r, v));
-// let accountNumber = '123';
-// STARTING HIGHLIHTS
+// TITLE:
 async function titleIndc() {
     figlet.text("ATM Project", function (err, data) {
         if (err) {
@@ -29,7 +27,7 @@ const nameIndc = async () => {
     await sleep(4000);
     developerName.stop();
 };
-// user login functionality
+// LOGIN FUNCTIONALITY: 
 const login = async () => {
     let userInfo = await inquirer.prompt([{
             name: 'Username',
@@ -42,7 +40,6 @@ const login = async () => {
             message: chalk.magenta('Enter Password: ')
         }
     ]);
-    // console.log("value", userInfo)
     if (userInfo.Username && userInfo.Password) {
         console.log(`
         ${chalk.green("User logged Successfully")}\n
@@ -50,6 +47,7 @@ const login = async () => {
         Name: ${userInfo.Username}
         Account Number: ${accountNumber}
         Current Balance: ${userBalance}
+        User Pin: ${userPin}
         `);
     }
     else {
@@ -58,7 +56,7 @@ const login = async () => {
     }
 };
 // need to work on validation
-// ATM FUNCTIONALITIES 
+// ATM FUNCTIONALITIES:
 async function cashWithDraw() {
     let withDrawingAmount;
     let pin = await inquirer.prompt([{
@@ -87,14 +85,22 @@ async function cashWithDraw() {
             }
             else {
                 withDrawingAmount = otherAmount.CustomAmount;
-                updatedBalance = userBalance - withDrawingAmount;
-                console.log(`${withDrawingAmount} has WithDrawed, your current balance is ${updatedBalance}`);
+                userBalance = userBalance - withDrawingAmount;
+                console.log(`
+    ==========================================================
+        ${withDrawingAmount} has WithDrawed, your current balance is ${userBalance}
+    ==========================================================
+                `);
             }
         }
         else {
             withDrawingAmount = immediateFigure.Amount;
-            updatedBalance = userBalance - withDrawingAmount;
-            console.log(`${withDrawingAmount} has WithDrawed, your current balance is ${updatedBalance}`);
+            userBalance = userBalance - withDrawingAmount;
+            console.log(`
+    ==========================================================
+        ${withDrawingAmount} has WithDrawed, your current balance is ${userBalance}
+    ==========================================================
+            `);
         }
     }
     else {
@@ -102,7 +108,6 @@ async function cashWithDraw() {
         await cashWithDraw();
     }
 }
-// choice: 
 async function checkingAccountBalance() {
     let userAcNo = await inquirer.prompt([{
             name: 'AccountNumber',
@@ -120,47 +125,127 @@ async function checkingAccountBalance() {
         await checkingAccountBalance();
     }
 }
-// WAITING FOR ATM FUNCTIONALITY TO BE LOADING
+async function cashDepositer() {
+    let userAcPin = await inquirer.prompt([{
+            name: 'AccountPin',
+            type: 'number',
+            message: 'Enter your 4 digit pin code: '
+        }]);
+    if (userAcPin.AccountPin === userPin) {
+        console.log("yes successfully valid person");
+        const depositingFigure = await inquirer.prompt([
+            {
+                type: "list",
+                name: "Amount",
+                message: "Please select any amount for depositing from below options: \n ",
+                choices: [1000, 2000, 3000, 4000, 5000, 10000, "Other Amount"]
+            },
+        ]);
+        if (depositingFigure.Amount === "Other Amount") {
+            let otherAmount = await inquirer.prompt([{
+                    name: 'CustomAmount',
+                    type: 'number',
+                    message: 'Please Enter Amount: '
+                }]);
+            userBalance = userBalance + otherAmount.CustomAmount;
+            console.log(`
+    =================================================================================
+        ${otherAmount.CustomAmount} has been deposited in your account, Your current balance is ${userBalance}
+    =================================================================================
+                `);
+        }
+        else {
+            userBalance = userBalance + depositingFigure.Amount;
+            console.log(`
+    =================================================================================
+        ${depositingFigure.Amount} has been deposited in your account, Your current balance is ${userBalance}
+    =================================================================================
+                `);
+        }
+    }
+    else {
+        console.log('Invalid PIN, Please input the right pin as per the detail section');
+        await cashDepositer();
+    }
+}
+async function pinUpdation() {
+    let previousPin = await inquirer.prompt([{
+            name: 'PreviousPin',
+            type: 'number',
+            message: 'Enter your 4 digit pin code: '
+        }]);
+    if (previousPin.PreviousPin === userPin) {
+        let latestPin = await inquirer.prompt([{
+                name: 'NewPin',
+                type: 'number',
+                message: 'Enter new pin for updation: '
+            }]);
+        userPin = latestPin.NewPin;
+    }
+    else {
+        console.log("Invalid Pin");
+        await pinUpdation();
+    }
+}
+// LOADING:
 async function loading() {
     console.log(chalk.magenta("\nAtm is Loading Please wait...\n"));
 }
-// ATM FUNCTIONALITY USER SELECTION 
+// OPERATIONS: 
 const atmFunctions = async () => {
     const fuctionality = await inquirer.prompt([
         {
             type: "list",
             name: "Functions",
             message: "Which Function you want to perfrom?\n ",
-            choices: ['Cash Withdraw', 'Cash Deposit', 'Checking Account Balance', 'Money Transfer']
+            choices: ['Cash Withdraw', 'Cash Deposit', 'Balance Inquiry', 'Updating Pin']
         },
     ]);
     // console.log(fuctionality)
     if (fuctionality.Functions === "Cash Withdraw") {
-        await cashWithDraw();
+        await repeater(cashWithDraw);
     }
-    else if (fuctionality.Functions === "Checking Account Balance") {
-        await againRunner();
+    else if (fuctionality.Functions === "Balance Inquiry") {
+        await repeater(checkingAccountBalance);
     }
     else if (fuctionality.Functions === "Cash Deposit") {
-        console.log("Cash Deposit");
+        await repeater(cashDepositer);
     }
-    else if (fuctionality.Functions === "Money Transfer") {
-        console.log("Money Tranfer");
+    // else if (fuctionality.Functions === "Updating Pin") {
+    //     await repeater(pinUpdation)
+    // }
+    else {
+        await repeater(pinUpdation);
     }
 };
-const againRunner = async () => {
-    await checkingAccountBalance();
-    var againChance = await inquirer.prompt([
+// CALLBACKS:
+const repeater = async (callback) => {
+    await callback();
+    var repeaterAsker = await inquirer.prompt([
         {
             name: 'Again',
             type: 'input',
             message: 'Would you like to use ATM again Y or N? '
         }
     ]);
-    if (againChance.Again === "Y" || againChance.Again === "y" || againChance.Again === "YES" || againChance === "yes") {
+    if (repeaterAsker.Again === "Y" || repeaterAsker.Again === "y" || repeaterAsker.Again === "YES" || repeaterAsker === "yes") {
         await atmFunctions();
     }
 };
+// const againRunner = async () => {
+//     await checkingAccountBalance()
+//     var againChance = await inquirer.prompt([
+//         {
+//             name: 'Again',
+//             type: 'input',
+//             message: 'Would you like to use ATM again Y or N? '
+//         }
+//     ])
+//     if (againChance.Again === "Y" || againChance.Again === "y" || againChance.Again === "YES" || againChance === "yes") {
+//         await atmFunctions();
+//     }
+// }
+// SOMES CALLBACKS WORKS>>
 // await sleep(3000);
 // await nameIndc();
 await login();
