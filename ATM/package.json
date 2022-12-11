@@ -1,9 +1,12 @@
 {
-  "name": "atm",
-  "version": "1.0.0",
+  "name": "harish-atm-1",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "harish-atm-1": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

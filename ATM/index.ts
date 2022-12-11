@@ -1,4 +1,5 @@
-// ATM PROJECT:
+#! /usr/bin/env node
+
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import chalkAnimation from 'chalk-animation';
@@ -55,7 +56,7 @@ const login = async () => {
     if (userInfo.Username && userInfo.Password) {
         console.log(`
         ${chalk.green("User logged Successfully")}\n
-        User Detail: 
+        ${chalk.yellow(`User Detail:`)}\n 
         Name: ${userInfo.Username}
         Account Number: ${accountNumber}
         Current Balance: ${userBalance}
@@ -80,7 +81,8 @@ async function cashWithDraw() {
         type: 'number',
         message: 'Please Enter your 4 digits pin: '
     }])
-
+    await loading('Verifing the PIN...')
+    await sleep(2000)
     if (pin.Userpin === userPin) {
         const immediateFigure = await inquirer.prompt([
             {
@@ -105,6 +107,7 @@ async function cashWithDraw() {
             else {
                 withDrawingAmount = otherAmount.CustomAmount;
                 userBalance = userBalance - withDrawingAmount
+                await spinnerRunner('Atm is withdrawing the cash please wait... ', 2000)
                 console.log(`${chalk.magenta(`
     ==========================================================
         ${withDrawingAmount} has WithDrawed, your current balance is ${userBalance}
@@ -116,6 +119,7 @@ async function cashWithDraw() {
         else {
             withDrawingAmount = immediateFigure.Amount
             userBalance = userBalance - withDrawingAmount
+            await spinnerRunner('Atm is withdrawing the cash please wait... ', 2000)
             console.log(`${chalk.magenta(`
     ==========================================================
         ${withDrawingAmount} has WithDrawed, your current balance is ${userBalance}
@@ -136,11 +140,11 @@ async function checkingAccountBalance() {
         type: 'input',
         message: 'Enter your 16 digits Account number: '
     }])
+    await loading('Verifing your Account Number please wait... ');
+    await sleep(4000);
 
     if (userAcNo.AccountNumber === accountNumber || userAcNo.AccountNumber === 'PK00000123456789' || userAcNo.AccountNumber === 'pk00000123456789') {
-        const spinner = createSpinner(chalk.yellow('Please wait ATM is Checking Your Account Balance... ')).start()
-        await sleep(3000)
-        spinner.success()
+        await spinnerRunner('Your account number is verified, Atm is checking your Balance...', 3000)
         console.log(`\nYour Current Balance ${chalk.cyan(`${userBalance}`)}`)
     }
     else {
@@ -156,6 +160,10 @@ async function cashDepositer() {
         type: 'number',
         message: 'Enter your 4 digit pin code: '
     }])
+
+    await loading('Verifing the PIN...')
+    await sleep(2000)
+
     if (userAcPin.AccountPin === userPin) {
         console.log("yes successfully valid person")
         const depositingFigure = await inquirer.prompt([
@@ -175,19 +183,21 @@ async function cashDepositer() {
             }])
 
             userBalance = userBalance + otherAmount.CustomAmount;
-            console.log(`
+            await spinnerRunner("Cash is getting deposit please wait... ", 3000);
+            console.log(`${chalk.magenta(`
     =================================================================================
         ${otherAmount.CustomAmount} has been deposited in your account, Your current balance is ${userBalance}
     =================================================================================
-                `)
+                `)}`)
         }
         else {
             userBalance = userBalance + depositingFigure.Amount;
-            console.log(`
+            await spinnerRunner("Cash is getting deposit please wait... ", 3000);
+            console.log(`${chalk.magenta(`
     =================================================================================
         ${depositingFigure.Amount} has been deposited in your account, Your current balance is ${userBalance}
     =================================================================================
-                `)
+                `)}`)
 
         }
 
@@ -207,24 +217,30 @@ async function pinUpdation() {
         type: 'number',
         message: 'Enter your 4 digit pin code: '
     }])
+
+    await loading('Verifing the PIN...')
+    await sleep(3000)
+
     if (previousPin.PreviousPin === userPin) {
         let latestPin = await inquirer.prompt([{
             name: 'NewPin',
             type: 'number',
             message: 'Enter new pin for updation: '
         }])
+        await spinnerRunner('We are updating new PIN...', 4000)
         userPin = latestPin.NewPin
+        console.log(chalk.green('Successfully PIN Updated'))
     }
     else {
-        console.log("Invalid Pin")
+        console.log(chalk.red("Invalid Pin"))
         await pinUpdation()
     }
 }
 
 // LOADING:
 
-async function loading() {
-    console.log(chalk.magenta("\nAtm is Loading Please wait...\n"))
+async function loading(loadingText: string) {
+    console.log(chalk.magenta(`\n${loadingText}\n`))
 }
 
 // OPERATIONS: 
@@ -257,6 +273,15 @@ const atmFunctions = async () => {
     }
 }
 
+// SPINNER:
+
+const spinnerRunner = async (loadingValue: string, sleepTime: number) => {
+    const spinner = createSpinner(chalk.yellow(loadingValue)).start()
+    await sleep(sleepTime)
+    spinner.success()
+
+}
+
 // CALLBACKS:
 
 const repeater = async (callback: Function) => {
@@ -275,34 +300,10 @@ const repeater = async (callback: Function) => {
 }
 
 
-
-
-
-
-
-
-
-// const againRunner = async () => {
-//     await checkingAccountBalance()
-
-//     var againChance = await inquirer.prompt([
-//         {
-//             name: 'Again',
-//             type: 'input',
-//             message: 'Would you like to use ATM again Y or N? '
-//         }
-//     ])
-//     if (againChance.Again === "Y" || againChance.Again === "y" || againChance.Again === "YES" || againChance === "yes") {
-//         await atmFunctions();
-//     }
-
-// }
-// SOMES CALLBACKS WORKS>>
-
 await sleep(3000);
 await nameIndc();
 await login();
 await sleep(5000);
-await loading();
+await loading('ATM is loading please wait...');
 await sleep(3000);
 await atmFunctions();
