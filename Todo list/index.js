@@ -7,7 +7,6 @@ async function createTodo() {
             messsage: 'Write your to do: ',
         }]);
     todoList.push(todosItem.Todo);
-    console.log(todoList);
 }
 const againStarter = async () => {
     do {
@@ -17,7 +16,18 @@ const againStarter = async () => {
                 type: 'input',
                 message: 'Do you want to add more todo y or n'
             }]);
+        if (again.AgainRunner === 'no' || again.AgainRunner === 'n' || again.AgainRunner === 'NO' || again.AgainRunner === 'N') {
+            await operations();
+        }
     } while (again.AgainRunner === 'y' || again.AgainRunner === 'yes' || again.AgainRunner === 'Y' || again.AgainRunner === 'YES');
+};
+const todoDisplayer = async () => {
+    // for (let i = 0; i < todoList.length; i++) {
+    //     console.log(`${i} ${todoList[i]}`)
+    // }
+    todoList.forEach(element => {
+        console.log(`* ${element}`);
+    });
 };
 const operations = async () => {
     let gettingOpertion = await inquirer.prompt([{
@@ -32,6 +42,7 @@ const operations = async () => {
     }
     else if (gettingOpertion.Useroperation === '2. Display Todo') {
         console.log("Display to do");
+        await todoDisplayer();
     }
     else if (gettingOpertion.Useroperation === '3. Mark todo as completed') {
         console.log("mark to do as completed ");

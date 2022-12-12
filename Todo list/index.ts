@@ -20,8 +20,17 @@ const againStarter = async () => {
             type: 'input',
             message: 'Do you want to add more todo y or n'
         }])
+        if (again.AgainRunner === 'no' || again.AgainRunner === 'n' || again.AgainRunner === 'NO' || again.AgainRunner === 'N') {
+            await operations()
+        }
     }
     while (again.AgainRunner === 'y' || again.AgainRunner === 'yes' || again.AgainRunner === 'Y' || again.AgainRunner === 'YES')
+}
+
+const todoDisplayer = async () => {
+    todoList.forEach(e => {
+        console.log(`* ${e}`)
+    });
 }
 
 const operations = async () => {
@@ -32,14 +41,14 @@ const operations = async () => {
         message: 'Which operation you want to perform',
         choices: ['1. Create Todo', '2. Display Todo', '3. Mark todo as completed', '4. Updating Todo', '5. Deleting Todo']
     }])
-    console.log(gettingOpertion)
+    // console.log(gettingOpertion)
 
     if (gettingOpertion.Useroperation === '1. Create Todo') {
         await againStarter()
 
     }
     else if (gettingOpertion.Useroperation === '2. Display Todo') {
-        console.log("Display to do")
+        await todoDisplayer()
     }
     else if (gettingOpertion.Useroperation === '3. Mark todo as completed') {
         console.log("mark to do as completed ")
