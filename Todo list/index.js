@@ -1,5 +1,24 @@
 import inquirer from 'inquirer';
-console.log("everything is working fine");
+let todoList = [];
+async function createTodo() {
+    let todosItem = await inquirer.prompt([{
+            name: 'Todo',
+            type: 'input',
+            messsage: 'Write your to do: ',
+        }]);
+    todoList.push(todosItem.Todo);
+    console.log(todoList);
+}
+const againStarter = async () => {
+    do {
+        await createTodo();
+        var again = await inquirer.prompt([{
+                name: 'AgainRunner',
+                type: 'input',
+                message: 'Do you want to add more todo y or n'
+            }]);
+    } while (again.AgainRunner === 'y' || again.AgainRunner === 'yes' || again.AgainRunner === 'Y' || again.AgainRunner === 'YES');
+};
 const operations = async () => {
     let gettingOpertion = await inquirer.prompt([{
             name: 'Useroperation',
@@ -9,8 +28,7 @@ const operations = async () => {
         }]);
     console.log(gettingOpertion);
     if (gettingOpertion.Useroperation === '1. Create Todo') {
-        console.log("Create todo");
-        await createTodo();
+        await againStarter();
     }
     else if (gettingOpertion.Useroperation === '2. Display Todo') {
         console.log("Display to do");
@@ -26,17 +44,3 @@ const operations = async () => {
     }
 };
 await operations();
-let todoList = [];
-// let arr: string[] = []
-async function createTodo() {
-    let todo = await inquirer.prompt([{
-            name: 'Todo',
-            type: 'input',
-            messsage: 'Write your to do: ',
-        }]);
-    todoList.push(todo.Todo);
-    // console.log(typeof todo.Todo)
-    // console.log(first)
-}
-// todoList.push("working fine")
-console.log(todoList);
