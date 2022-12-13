@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-let todoList = [];
+let todoList = ['first', 'second', 'third', 'fourth', 'fivth', 'six', 'seven', 'eight', 'nine', 'ten'];
 async function createTodo() {
     let todosItem = await inquirer.prompt([{
             name: 'Todo',
@@ -22,12 +22,49 @@ const againStarter = async () => {
     } while (again.AgainRunner === 'y' || again.AgainRunner === 'yes' || again.AgainRunner === 'Y' || again.AgainRunner === 'YES');
 };
 const todoDisplayer = async () => {
-    // for (let i = 0; i < todoList.length; i++) {
-    //     console.log(`${i} ${todoList[i]}`)
-    // }
-    todoList.forEach(element => {
-        console.log(`* ${element}`);
+    console.log('Todo List: \n');
+    todoList.forEach(e => {
+        console.log(`* ${e}`);
     });
+};
+const todoUpdater = async () => {
+    let updatedTodoValue;
+    let todoForUpdate = await inquirer.prompt([{
+            name: 'Updations',
+            type: 'list',
+            message: 'Which todo you want to update? ',
+            choices: todoList
+        },
+        {
+            name: 'UpdatedTodo',
+            type: 'input',
+            message: 'Write your updated todo: '
+        }
+    ]);
+    updatedTodoValue = todoForUpdate.UpdatedTodo;
+    for (let i = 0; i < todoList.length; i++) {
+        if (todoForUpdate.Updations === todoList[i]) {
+            todoList[i] = updatedTodoValue;
+        }
+    }
+    console.log('value after forloop ', todoList);
+};
+const todoRemover = async () => {
+    let deletingTodoValue;
+    let todoForDeleted = await inquirer.prompt([{
+            name: 'Deleting',
+            type: 'list',
+            message: 'Which todo you want to Remove? ',
+            choices: todoList
+        }]);
+    deletingTodoValue = todoForDeleted.Deleting;
+    for (let i = 0; i < todoList.length; i++) {
+        if (todoForDeleted.Deleting === todoList[i]) {
+            let index = todoList.indexOf(todoList[i]);
+            todoList.splice(index, 1);
+        }
+    }
+    console.log(todoList);
 };
 const operations = async () => {
     let gettingOpertion = await inquirer.prompt([{
@@ -36,12 +73,11 @@ const operations = async () => {
             message: 'Which operation you want to perform',
             choices: ['1. Create Todo', '2. Display Todo', '3. Mark todo as completed', '4. Updating Todo', '5. Deleting Todo']
         }]);
-    console.log(gettingOpertion);
+    // console.log(gettingOpertion)
     if (gettingOpertion.Useroperation === '1. Create Todo') {
         await againStarter();
     }
     else if (gettingOpertion.Useroperation === '2. Display Todo') {
-        console.log("Display to do");
         await todoDisplayer();
     }
     else if (gettingOpertion.Useroperation === '3. Mark todo as completed') {
@@ -49,9 +85,10 @@ const operations = async () => {
     }
     else if (gettingOpertion.Useroperation === '4. Updating Todo') {
         console.log("updating todo");
+        await todoUpdater();
     }
     else if (gettingOpertion.Useroperation === '5. Deleting Todo') {
-        console.log("deleting todo ");
+        await todoRemover();
     }
 };
 await operations();

@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 
-let todoList: string[] = []
+let todoList: string[] = ['first', 'second', 'third', 'fourth', 'fivth', 'six', 'seven', 'eight', 'nine', 'ten']
 
 async function createTodo() {
     let todosItem = await inquirer.prompt([{
@@ -28,10 +28,54 @@ const againStarter = async () => {
 }
 
 const todoDisplayer = async () => {
+    console.log('Todo List: \n')
     todoList.forEach(e => {
         console.log(`* ${e}`)
     });
 }
+
+const todoUpdater = async () => {
+    let updatedTodoValue: string;
+    let todoForUpdate = await inquirer.prompt([{
+        name: 'Updations',
+        type: 'list',
+        message: 'Which todo you want to update? ',
+        choices: todoList
+    },
+    {
+        name: 'UpdatedTodo',
+        type: 'input',
+        message: 'Write your updated todo: '
+    }
+    ])
+    updatedTodoValue = todoForUpdate.UpdatedTodo;
+
+    for (let i = 0; i < todoList.length; i++) {
+        if (todoForUpdate.Updations === todoList[i]) {
+            todoList[i] = updatedTodoValue;
+        }
+    }
+    console.log('value after forloop ', todoList)
+}
+
+const todoRemover = async () => {
+    let deletingTodoValue: string;
+    let todoForDeleted = await inquirer.prompt([{
+        name: 'Deleting',
+        type: 'list',
+        message: 'Which todo you want to Remove? ',
+        choices: todoList
+    }])
+    deletingTodoValue = todoForDeleted.Deleting;
+    for (let i = 0; i < todoList.length; i++) {
+        if (todoForDeleted.Deleting === todoList[i]) {
+            let index = todoList.indexOf(todoList[i])
+            todoList.splice(index, 1)
+        }
+    }
+    console.log(todoList)
+}
+
 
 const operations = async () => {
 
@@ -55,9 +99,10 @@ const operations = async () => {
     }
     else if (gettingOpertion.Useroperation === '4. Updating Todo') {
         console.log("updating todo")
+        await todoUpdater()
     }
     else if (gettingOpertion.Useroperation === '5. Deleting Todo') {
-        console.log("deleting todo ")
+        await todoRemover()
     }
 
 }
