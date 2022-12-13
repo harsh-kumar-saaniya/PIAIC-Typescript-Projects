@@ -1,6 +1,7 @@
 import inquirer from 'inquirer';
 
-let todoList: string[] = ['first', 'second', 'third', 'fourth', 'fivth', 'six', 'seven', 'eight', 'nine', 'ten']
+let todoList: string[] = ['first', 'second', 'third', 'fourth', 'fivth', 'six', 'seven', 'eight', 'nine', 'ten'];
+let completedTodos: string[] = [];
 
 async function createTodo() {
     let todosItem = await inquirer.prompt([{
@@ -22,6 +23,10 @@ const againStarter = async () => {
         }])
         if (again.AgainRunner === 'no' || again.AgainRunner === 'n' || again.AgainRunner === 'NO' || again.AgainRunner === 'N') {
             await operations()
+        }
+        else if (again.AgainRunner !== 'no' || again.AgainRunner !== 'n' || again.AgainRunner !== 'NO' || again.AgainRunner !== 'N') {
+            console.log('Invalid answer! Write todo again') // need to work here in this uX work
+            await againStarter()
         }
     }
     while (again.AgainRunner === 'y' || again.AgainRunner === 'yes' || again.AgainRunner === 'Y' || again.AgainRunner === 'YES')
@@ -76,6 +81,29 @@ const todoRemover = async () => {
     console.log(todoList)
 }
 
+const complectionMarking = async () => {
+    let markingForCompleted = await inquirer.prompt([{
+        name: 'Completing',
+        type: 'list',
+        message: 'Which todo you want to Mark as Completed? ',
+        choices: todoList
+    }])
+    for (let i = 0; i < todoList.length; i++) {
+        if (markingForCompleted.Completing === todoList[i]) {
+            completedTodos.push(todoList[i])
+            let index = todoList.indexOf(todoList[i])
+            todoList.splice(index, 1)
+        }
+    }
+    console.log(todoList)
+
+}
+const completedTodosList = async () => {
+    console.log("This all todos is completed!");
+    completedTodos.forEach(e => {
+        console.log(`* ${e}`)
+    });
+}
 
 const operations = async () => {
 
@@ -83,7 +111,7 @@ const operations = async () => {
         name: 'Useroperation',
         type: 'list',
         message: 'Which operation you want to perform',
-        choices: ['1. Create Todo', '2. Display Todo', '3. Mark todo as completed', '4. Updating Todo', '5. Deleting Todo']
+        choices: ['1. Create Todo', '2. Display Todo', '3. Completed Task', '4. Mark todo as completed', '5. Updating Todo', '6. Deleting Todo']
     }])
     // console.log(gettingOpertion)
 
@@ -94,14 +122,16 @@ const operations = async () => {
     else if (gettingOpertion.Useroperation === '2. Display Todo') {
         await todoDisplayer()
     }
-    else if (gettingOpertion.Useroperation === '3. Mark todo as completed') {
-        console.log("mark to do as completed ")
+    else if (gettingOpertion.Useroperation === '3. Completed Task') {
+        await completedTodosList()
     }
-    else if (gettingOpertion.Useroperation === '4. Updating Todo') {
-        console.log("updating todo")
+    else if (gettingOpertion.Useroperation === '4. Mark todo as completed') {
+        await complectionMarking()
+    }
+    else if (gettingOpertion.Useroperation === '5. Updating Todo') {
         await todoUpdater()
     }
-    else if (gettingOpertion.Useroperation === '5. Deleting Todo') {
+    else if (gettingOpertion.Useroperation === '6. Deleting Todo') {
         await todoRemover()
     }
 
