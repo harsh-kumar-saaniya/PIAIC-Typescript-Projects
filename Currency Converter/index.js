@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 import inquirer from 'inquirer';
 const UsdToPkr = 228.43;
 const PkrToUsd = 0.0044;
