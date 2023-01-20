@@ -1,10 +1,13 @@
 {
-  "name": "countdown-timer",
+  "name": "harish-counterdown-timer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "types": "module",
+  "bin": {
+    "harish-counterdown-timer": "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,9 +15,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "inquirer": "^9.1.4"
+    "chalk": "^5.2.0",
+    "figlet": "^1.5.2",
+    "inquirer": "^9.1.4",
+    "nanospinner": "^1.1.0"
   },
   "devDependencies": {
+    "@types/figlet": "^1.5.5",
     "@types/inquirer": "^9.0.3"
   }
 }
