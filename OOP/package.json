@@ -5,10 +5,13 @@
   "devDependencies": {
     "@types/inquirer": "^9.0.3"
   },
-  "name": "oop",
+  "name": "harish-basic-oop",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "harish-basic-oop": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
