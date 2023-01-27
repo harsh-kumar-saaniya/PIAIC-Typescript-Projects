@@ -4,7 +4,7 @@ import chalkAnimation from 'chalk-animation';
 import figlet from 'figlet';
 import { createSpinner } from 'nanospinner';
 
-let todoList: string[] = ['first', 'second', 'third', 'fourth', 'fivth', 'six', 'seven', 'eight', 'nine', 'ten'];
+let todoList: string[] = [];
 let completedTodos: string[] = [];
 
 
@@ -22,8 +22,6 @@ async function appDiclarabler() {
     })
 
 }
-
-
 
 async function developerName() {
     let text = chalkAnimation.karaoke(`
@@ -47,9 +45,9 @@ async function createTodo() {
 }
 
 
-const againStarter = async () => {
+const againStarter = async (todoCreaterFunc:Function) => {
     do {
-        await createTodo()
+        await todoCreaterFunc()
         var again = await inquirer.prompt([{
             name: 'AgainRunner',
             type: 'input',
@@ -61,7 +59,7 @@ const againStarter = async () => {
         }
         else if (again.AgainRunner !== 'no' || again.AgainRunner !== 'n' || again.AgainRunner !== 'NO' || again.AgainRunner !== 'N') {
             console.log(chalk.hex('FF8A65')('Write todo again\n')) // need to work here in this uX work
-            await againStarter()
+            await againStarter(createTodo)
         }
     }
     while (again.AgainRunner === 'y' || again.AgainRunner === 'yes' || again.AgainRunner === 'Y' || again.AgainRunner === 'YES')
@@ -96,7 +94,7 @@ const todoUpdater = async () => {
             todoList[i] = updatedTodoValue;
         }
     }
-    console.log('value after forloop ', todoList)
+    console.log('updated todo ', todoList)
 }
 
 const todoRemover = async () => {
@@ -114,7 +112,6 @@ const todoRemover = async () => {
             todoList.splice(index, 1)
         }
     }
-    console.log(todoList)
 }
 
 const complectionMarking = async () => {
@@ -131,7 +128,6 @@ const complectionMarking = async () => {
             todoList.splice(index, 1)
         }
     }
-    console.log(todoList)
 
 }
 const completedTodosList = async () => {
@@ -152,8 +148,7 @@ const operations = async () => {
     // console.log(gettingOpertion)
 
     if (gettingOpertion.Useroperation === '1. Create Todo') {
-        await againStarter()
-
+        await againStarter(createTodo)
     }
     else if (gettingOpertion.Useroperation === '2. Display Todo') {
         await reStarter(todoDisplayer)
@@ -173,7 +168,8 @@ const operations = async () => {
 
 }
 
-async function reStarter (callback:Function){
+async function reStarter(callback: Function) {
+    let restartingValue: boolean
     do {
         await callback()
         var ans = await inquirer.prompt([{
@@ -181,11 +177,15 @@ async function reStarter (callback:Function){
             type: 'list',
             choices: ['Back to Options', 'Exit']
         }])
-        if(ans.Select === "Back to Options"){
+        if (ans.Select === "Back to Options") {
             await operations()
+            restartingValue = true;
+        }
+        else {
+            restartingValue = false;
         }
 
-    } while (ans.Select === "Back to Options");
+    } while (restartingValue);
 }
 
 await appDiclarabler();
