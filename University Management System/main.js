@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 "use strict";
 class Person {
     constructor(name, age) {
@@ -54,12 +55,17 @@ class Department {
 }
 const student1 = new Student("harish", 19, "student1");
 const student2 = new Student("harsh", 19, "student2");
+console.log(student2);
 const instructor1 = new Instructor("Zia", 19, 20000);
 const instructor2 = new Instructor("Imran", 19, 20000);
+console.log(instructor1);
+console.log(instructor2);
 const course1 = new Course("course1", "Metaverse");
 const course2 = new Course("course2", "Blockchain");
 course1.addStudent(student1);
 course1.addStudent(student2);
+console.log(course1);
+console.log(course2);
 course1.setInstructor(instructor1);
 const department1 = new Department("Computer Science");
 department1.addCourse(course1);
