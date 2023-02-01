@@ -1,12 +1,22 @@
 {
-  "name": "adventure-game",
+  "name": "harish-adventure-game",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
+  "bin": {
+    "harish-adventure-game": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^9.1.4"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.3"
+  }
 }
